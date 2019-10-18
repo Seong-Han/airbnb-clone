@@ -10,6 +10,35 @@ from users import models as user_models
 ## python pakages => django => 내가 만든 거
 
 
+class AbstractItem(core_models.TimeStampedModel):
+
+    """ Abstract Item """
+
+    name = models.CharField(max_length=80)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+
+class RoomType(AbstractItem):
+    pass
+
+
+class Amenity(AbstractItem):
+    pass
+
+
+class Facility(AbstractItem):
+    pass
+
+
+class HouseRule(AbstractItem):
+    pass
+
+
 class Room(core_models.TimeStampedModel):
     """ Room Model Definitions """
 
@@ -28,3 +57,10 @@ class Room(core_models.TimeStampedModel):
     instant_book = models.BooleanField(default=False)
     host = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
     ## host는 다른 user과 연결되야 한다.
+    room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, null=True)
+    amenity = models.ManyToManyField(Amenity)
+    facility = models.ManyToManyField(Facility)
+    house_rules = models.ManyToManyField(HouseRule)
+
+    def __str__(self):
+        return self.name
